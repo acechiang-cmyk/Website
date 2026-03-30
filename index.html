@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nelson Property Management — Metro Detroit</title>
+<meta name="description" content="Veteran-owned property management serving 30+ municipalities across Macomb & Oakland County. Less stress, more profit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Barlow+Semi+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+// Must be defined before cdn.tailwindcss.com loads
+tailwind = window.tailwind || {};
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { DEFAULT: '#111111', light: '#222222', dark: '#000000', muted: '#333333' },
+        gold:  { DEFAULT: '#9F2526', light: '#CF9292', dark: '#7a1c1d', pale: '#fff0f0' },
+        cream: '#f9f7f2',
+        ink:   '#000000',
+      },
+      fontFamily: {
+        display:    ['"Libre Baskerville"', 'Georgia', 'serif'],
+        body:       ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        condensed:  ['"Barlow Semi Condensed"', 'system-ui', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  h1,h2,h3,.font-display { font-family: 'Libre Baskerville', Georgia, serif; }
+  /* Barlow Semi Condensed — nav links, stat numbers, eyebrow labels */
+  nav a, nav button, .font-condensed { font-family: 'Barlow Semi Condensed', system-ui, sans-serif; letter-spacing: 0.01em; }
+  body { background: #f9f7f2; color: #000000; }
+
+  /* Grain texture overlay */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  /* Spring animations — transform + opacity only */
+  .card-lift {
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease, box-shadow 0.35s ease;
+  }
+  .card-lift:hover { transform: translateY(-6px); }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: #9F2526; color: #fff; font-weight: 600; letter-spacing: 0.02em;
+    padding: 0.75rem 1.75rem; border-radius: 0.375rem;
+    box-shadow: 0 4px 16px rgba(159,37,38,0.35), 0 1px 4px rgba(159,37,38,0.2);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, background 0.2s ease;
+  }
+  .btn-primary:hover  { background: #CF9292; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(159,37,38,0.4); }
+  .btn-primary:focus-visible { outline: 3px solid #9F2526; outline-offset: 3px; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; color: #fff; font-weight: 500;
+    padding: 0.75rem 1.75rem; border-radius: 0.375rem; border: 1.5px solid rgba(255,255,255,0.6);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-ghost:hover  { border-color: #fff; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+  .btn-ghost:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .btn-ghost:active { transform: translateY(0); }
+
+  .btn-navy {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: #111111; color: #fff; font-weight: 600;
+    padding: 0.75rem 1.75rem; border-radius: 0.375rem;
+    box-shadow: 0 4px 16px rgba(17,17,17,0.3);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, background 0.2s ease;
+  }
+  .btn-navy:hover  { background: #222222; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(17,17,17,0.4); }
+  .btn-navy:focus-visible { outline: 3px solid #111111; outline-offset: 3px; }
+  .btn-navy:active { transform: translateY(0); }
+
+  /* Nav dropdown */
+  .nav-item { position: relative; }
+  .nav-item .dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0;
+    min-width: 200px; background: #fff; border-radius: 0.5rem;
+    box-shadow: 0 8px 32px rgba(17,17,17,0.15), 0 2px 8px rgba(17,17,17,0.08);
+    padding: 0.5rem 0; opacity: 0; pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 50;
+  }
+  .nav-item:hover .dropdown,
+  .nav-item:focus-within .dropdown { opacity: 1; pointer-events: all; transform: translateY(0); }
+  .dropdown a {
+    display: block; padding: 0.5rem 1.25rem; color: #111111; font-size: 0.875rem; font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .dropdown a:hover { background: #fff0f0; color: #9F2526; }
+
+  /* Stars */
+  .stars { color: #9F2526; letter-spacing: 0.05em; }
+
+  /* Testimonial carousel */
+  .testimonial-track { display: flex; transition: transform 0.45s cubic-bezier(0.34,1.2,0.64,1); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f9f7f2; }
+  ::-webkit-scrollbar-thumb { background: #9F2526; border-radius: 3px; }
+
+  /* Sticky nav */
+  #main-nav {
+    transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  }
+  #main-nav.scrolled {
+    background: rgba(17,17,17,0.96);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 24px rgba(17,17,17,0.25);
+  }
+
+  /* Form tab */
+  .tab-btn.active { background: #111111; color: #fff; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+
+  /* Hero image carousel */
+  .hero-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .hero-slide.active { opacity: 1; }
+  /* Mobile menu */
+  #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.34,1.2,0.64,1); }
+  #mobile-menu.open { max-height: 600px; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ===================== NAV ===================== -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 bg-navy">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">
+        <img src="Logo-nav.png" alt="Nelson Property Management" class="h-16 w-auto">
+      </a>
+
+      <!-- Desktop Nav -->
+      <ul class="hidden lg:flex items-center gap-1">
+        <li class="nav-item">
+          <button class="text-white/80 hover:text-white font-medium text-sm px-4 py-2 rounded transition-colors duration-150 flex items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            Services
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown">
+            <a href="#services">Property Marketing</a>
+            <a href="#services">Tenant Screening</a>
+            <a href="#services">Rent Collection</a>
+            <a href="#services">Maintenance</a>
+            <a href="#services">Multi-Family Management</a>
+            <a href="#services">Home Watch</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <button class="text-white/80 hover:text-white font-medium text-sm px-4 py-2 rounded transition-colors duration-150 flex items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            Owners
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown">
+            <a href="#pricing">Pricing & Guarantees</a>
+            <a href="#about">Our Team</a>
+            <a href="#contact">Owner Onboarding</a>
+            <a href="https://nelsonpropertymanagement.rentvine.com/portals/owner/" target="_blank">Owner Portal</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <button class="text-white/80 hover:text-white font-medium text-sm px-4 py-2 rounded transition-colors duration-150 flex items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            Tenants
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown">
+            <a href="#contact">Maintenance Request</a>
+            <a href="https://nelsonpropertymanagement.rentvine.com/portals/resident/" target="_blank">Tenant Portal</a>
+            <a href="#contact">Contact Support</a>
+          </div>
+        </li>
+        <li><a href="#about" class="text-white/80 hover:text-white font-medium text-sm px-4 py-2 rounded transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">About</a></li>
+        <li><a href="#testimonials" class="text-white/80 hover:text-white font-medium text-sm px-4 py-2 rounded transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">Reviews</a></li>
+      </ul>
+
+      <!-- Portal CTAs -->
+      <div class="hidden lg:flex items-center gap-2">
+        <a href="https://nelsonpropertymanagement.rentvine.com/portals/owner/" target="_blank"
+           class="text-white/80 hover:text-white text-sm font-medium px-3 py-1.5 rounded border border-white/20 hover:border-white/50 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+          Owner Portal
+        </a>
+        <a href="https://nelsonpropertymanagement.rentvine.com/portals/resident/" target="_blank"
+           class="text-sm font-semibold px-4 py-1.5 rounded bg-gold hover:bg-gold-light text-white transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+           style="box-shadow:0 2px 10px rgba(159,37,38,0.4)">
+          Tenant Portal
+        </a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button id="menu-toggle" aria-label="Toggle menu" class="lg:hidden text-white p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">
+        <svg id="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="lg:hidden bg-navy-dark border-t border-white/10">
+    <div class="px-6 py-4 space-y-1">
+      <a href="#services" class="block text-white/80 hover:text-white py-2 text-sm font-medium transition-colors">Services</a>
+      <a href="#pricing"  class="block text-white/80 hover:text-white py-2 text-sm font-medium transition-colors">Pricing</a>
+      <a href="#about"    class="block text-white/80 hover:text-white py-2 text-sm font-medium transition-colors">About & Team</a>
+      <a href="#testimonials" class="block text-white/80 hover:text-white py-2 text-sm font-medium transition-colors">Reviews</a>
+      <a href="#contact"  class="block text-white/80 hover:text-white py-2 text-sm font-medium transition-colors">Contact</a>
+      <div class="flex gap-3 pt-3">
+        <a href="https://nelsonpropertymanagement.rentvine.com/portals/owner/" target="_blank"
+           class="flex-1 text-center btn-ghost text-sm py-2">Owner Portal</a>
+        <a href="https://nelsonpropertymanagement.rentvine.com/portals/resident/" target="_blank"
+           class="flex-1 text-center btn-primary text-sm py-2">Tenant Portal</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+  <!-- Hero image carousel -->
+  <div class="absolute inset-0 z-0">
+    <div class="hero-slide active" style="background-image: url('images/banner-2.webp');"></div>
+    <div class="hero-slide" style="background-image: url('images/banner-3.webp');"></div>
+    <div class="hero-slide" style="background-image: url('images/banner-4.webp');"></div>
+    <!-- Dark overlay: strong left fade for text, vignette bottom -->
+    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.2) 100%), linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%);"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-20 lg:pt-36 lg:pb-28 w-full">
+    <div class="max-w-3xl">
+      <!-- Veteran badge -->
+      <div class="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6 font-condensed"
+           style="box-shadow: 0 2px 12px rgba(159,37,38,0.15);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L8.5 8.5 1 9.27l5.5 5.36L5.18 22 12 18.27 18.82 22l-1.32-7.37L23 9.27l-7.5-.77L12 2z"/></svg>
+        Veteran Owned &amp; Operated
+      </div>
+
+      <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-none mb-6" style="letter-spacing:-0.03em; line-height:1.05;">
+        Less Stress,<br>
+        <span class="text-gold">More Profit.</span>
+      </h1>
+
+      <p class="text-white/70 text-lg lg:text-xl leading-relaxed mb-10 max-w-xl" style="line-height:1.7;">
+        Metro Detroit's trusted property management firm — serving 30+ municipalities across Macomb &amp; Oakland County for over 10 years.
+      </p>
+
+      <div class="flex flex-wrap gap-4 mb-14">
+        <a href="#contact" class="btn-primary text-base">
+          Get a Free Rental Analysis
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#services" class="btn-ghost text-base">View Our Services</a>
+      </div>
+
+      <!-- Stat badges -->
+      <div class="flex flex-wrap gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gold/15 flex items-center justify-center flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div>
+            <div class="text-white font-condensed font-bold text-xl" style="letter-spacing:-0.02em;">10+ Years</div>
+            <div class="text-white/50 text-xs tracking-wide">In Business</div>
+          </div>
+        </div>
+        <div class="w-px bg-white/10 hidden sm:block"></div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gold/15 flex items-center justify-center flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#9F2526"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="text-white font-condensed font-bold text-xl" style="letter-spacing:-0.02em;">4.7★ Rating</div>
+            <div class="text-white/50 text-xs tracking-wide">Highest Reviews in Area</div>
+          </div>
+        </div>
+        <div class="w-px bg-white/10 hidden sm:block"></div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gold/15 flex items-center justify-center flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          </div>
+          <div>
+            <div class="text-white font-condensed font-bold text-xl" style="letter-spacing:-0.02em;">30+ Cities</div>
+            <div class="text-white/50 text-xs tracking-wide">Metro Detroit Coverage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide indicators -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2.5">
+    <button class="hero-dot w-6 h-1.5 rounded-full bg-white opacity-100 transition-[width,opacity] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label="Slide 1"></button>
+    <button class="hero-dot w-1.5 h-1.5 rounded-full bg-white opacity-40 transition-[width,opacity] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label="Slide 2"></button>
+    <button class="hero-dot w-1.5 h-1.5 rounded-full bg-white opacity-40 transition-[width,opacity] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label="Slide 3"></button>
+  </div>
+</section>
+
+<!-- ===================== SERVICES ===================== -->
+<section id="services" class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">What We Do</p>
+      <h2 class="font-display text-4xl lg:text-5xl text-navy font-bold" style="letter-spacing:-0.03em;">Full-Service Property Management</h2>
+      <p class="mt-4 text-ink/60 max-w-xl mx-auto" style="line-height:1.7;">Everything a landlord needs — handled with professionalism, transparency, and local expertise.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Card macro -->
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Property Marketing</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">Professional listings across top rental platforms to minimize vacancy and attract qualified tenants fast.</p>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Tenant Screening</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">Comprehensive background, credit, eviction history, and income verification to place reliable residents.</p>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Rent Collection</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">Electronic rent collection with direct deposit to owner accounts and monthly financial statements.</p>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Maintenance Services</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">24/7 emergency maintenance hotline and a trusted network of licensed vendors for repairs of all sizes.</p>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Property Inspections</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">Annual interior evaluations with documented reports to protect your investment and ensure compliance.</p>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl p-8 border border-navy/5 hover:border-gold/40 cursor-default"
+           style="box-shadow: 0 2px 16px rgba(17,17,17,0.07), 0 1px 4px rgba(17,17,17,0.04);">
+        <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6"  y1="20" x2="6"  y2="14"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-navy font-semibold mb-2" style="letter-spacing:-0.02em;">Financial Reporting</h3>
+        <p class="text-ink/60 text-sm leading-relaxed">Monthly owner statements, year-end reports, and real-time portal access so you always know where you stand.</p>
+      </div>
+
+    </div>
+
+    <!-- Additional services row -->
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="flex items-center gap-3 bg-white/60 rounded-xl px-5 py-4 border border-navy/5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>
+        <span class="text-navy font-medium text-sm">Multi-Family Management</span>
+      </div>
+      <div class="flex items-center gap-3 bg-white/60 rounded-xl px-5 py-4 border border-navy/5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/></svg>
+        <span class="text-navy font-medium text-sm">Home Watch Program</span>
+      </div>
+      <div class="flex items-center gap-3 bg-white/60 rounded-xl px-5 py-4 border border-navy/5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <span class="text-navy font-medium text-sm">Eviction Services &amp; Legal</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY NELSON ===================== -->
+<section class="py-24 relative overflow-hidden" style="background: linear-gradient(135deg, #111111 0%, #000000 60%, #222222 100%);" >
+  <!-- Subtle interior photo accent -->
+  <div class="absolute inset-0 pointer-events-none" style="opacity:0.08;">
+    <img src="images/secondary-banner-1.webp" alt="" class="w-full h-full object-cover" style="mix-blend-mode:luminosity;">
+  </div>
+  <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 80% 50%, rgba(159,37,38,0.1) 0%, transparent 60%);"></div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16">
+      <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">Why Choose Us</p>
+      <h2 class="font-display text-4xl lg:text-5xl text-white font-bold" style="letter-spacing:-0.03em;">The Nelson Difference</h2>
+      <p class="mt-4 text-white/50 max-w-xl mx-auto" style="line-height:1.7;">We don't just manage properties — we protect your investment like our own.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="background: rgba(159,37,38,0.15); box-shadow: 0 4px 20px rgba(159,37,38,0.12);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="font-condensed text-5xl text-gold font-bold mb-2" style="letter-spacing:-0.03em;">VET</div>
+        <h3 class="font-display text-xl text-white font-semibold mb-3">Veteran Owned</h3>
+        <p class="text-white/50 text-sm leading-relaxed" style="line-height:1.7;">Military discipline and integrity in every decision. We hold ourselves to a higher standard of service — because that's what you deserve.</p>
+      </div>
+
+      <div class="text-center">
+        <div class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="background: rgba(159,37,38,0.15); box-shadow: 0 4px 20px rgba(159,37,38,0.12);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <div class="font-condensed text-5xl text-gold font-bold mb-2" style="letter-spacing:-0.03em;">30+</div>
+        <h3 class="font-display text-xl text-white font-semibold mb-3">Municipalities Served</h3>
+        <p class="text-white/50 text-sm leading-relaxed" style="line-height:1.7;">From Fraser to Auburn Hills, we know every neighborhood, every market trend, and every local ordinance that affects your property.</p>
+      </div>
+
+      <div class="text-center">
+        <div class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="background: rgba(159,37,38,0.15); box-shadow: 0 4px 20px rgba(159,37,38,0.12);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 014 5.18 2 2 0 016 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L10.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 17.92v-.01z"/></svg>
+        </div>
+        <div class="font-condensed text-5xl text-gold font-bold mb-2" style="letter-spacing:-0.03em;">24/7</div>
+        <h3 class="font-display text-xl text-white font-semibold mb-3">Emergency Response</h3>
+        <p class="text-white/50 text-sm leading-relaxed" style="line-height:1.7;">Owners and tenants are never left without support. Our 24/7 emergency maintenance line means problems get solved — not ignored.</p>
+      </div>
+    </div>
+
+    <!-- CTA row -->
+    <div class="mt-16 text-center">
+      <a href="#contact" class="btn-primary text-base">Schedule a Free Consultation</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section id="pricing" class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">Transparent Pricing</p>
+      <h2 class="font-display text-4xl lg:text-5xl text-navy font-bold" style="letter-spacing:-0.03em;">Simple, Honest Fees</h2>
+      <p class="mt-4 text-ink/60 max-w-xl mx-auto" style="line-height:1.7;">No hidden charges. No surprises. Just straightforward management you can count on.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+      <!-- Leasing Only -->
+      <div class="bg-white rounded-2xl p-8 border border-navy/10"
+           style="box-shadow: 0 4px 24px rgba(17,17,17,0.08), 0 1px 6px rgba(17,17,17,0.04);">
+        <div class="mb-6">
+          <p class="font-condensed text-gold font-semibold text-xs tracking-widest uppercase mb-2">Starter</p>
+          <h3 class="font-condensed text-2xl text-navy font-bold mb-1" style="letter-spacing:0.01em;">Leasing Only</h3>
+          <p class="text-ink/50 text-sm">Tenant placement without ongoing management</p>
+        </div>
+        <div class="mb-6 pb-6 border-b border-navy/8">
+          <div class="flex items-baseline gap-1">
+            <span class="font-condensed text-4xl text-navy font-bold" style="letter-spacing:0.01em;">1st Mo.</span>
+            <span class="text-ink/50 text-sm">rent placement fee</span>
+          </div>
+          <p class="text-ink/40 text-sm mt-1">No ongoing management fee</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-ink/70">
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Property marketing &amp; listing</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Tenant screening</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Lease preparation</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Move-in coordination</li>
+          <li class="flex items-center gap-2 text-ink/30"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Ongoing management</li>
+          <li class="flex items-center gap-2 text-ink/30"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>24/7 maintenance hotline</li>
+          <li class="flex items-center gap-2 text-ink/30"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Owner portal &amp; reports</li>
+        </ul>
+        <a href="#contact" class="btn-navy w-full justify-center">Get Started</a>
+      </div>
+
+      <!-- Full Service — highlighted -->
+      <div class="relative bg-white rounded-2xl p-8 border border-gold/40"
+           style="box-shadow: 0 8px 40px rgba(17,17,17,0.12), 0 2px 12px rgba(159,37,38,0.12);">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+          <span class="font-condensed bg-gold text-navy text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
+                style="box-shadow: 0 4px 16px rgba(159,37,38,0.4);">Most Popular</span>
+        </div>
+        <div class="mb-6">
+          <p class="font-condensed text-gold font-semibold text-xs tracking-widest uppercase mb-2">Recommended</p>
+          <h3 class="font-condensed text-2xl text-navy font-bold mb-1" style="letter-spacing:0.01em;">Full Service</h3>
+          <p class="text-ink/50 text-sm">Complete hands-off property management</p>
+        </div>
+        <div class="mb-6 pb-6 border-b border-navy/8">
+          <div class="flex items-baseline gap-1">
+            <span class="font-condensed text-4xl text-navy font-bold" style="letter-spacing:0.01em;">10%</span>
+            <span class="text-ink/50 text-sm">of collected rent/mo</span>
+          </div>
+          <p class="text-ink/40 text-sm mt-1">$100 monthly minimum · $330 lease renewal</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-ink/70">
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Everything in Leasing Only</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>24/7 emergency maintenance hotline</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Monthly financial reports</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Owner portal with real-time access</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Annual interior inspections</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Property turnover coordination</li>
+          <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Eviction services &amp; legal guidance</li>
+        </ul>
+        <a href="#contact" class="btn-primary w-full justify-center">Start Full Service</a>
+      </div>
+    </div>
+
+    <!-- Guarantees -->
+    <div class="mt-16">
+      <h3 class="font-display text-2xl text-navy font-bold text-center mb-8" style="letter-spacing:-0.02em;">Our Guarantees</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl p-6 border border-navy/5 text-center"
+             style="box-shadow: 0 2px 12px rgba(17,17,17,0.06);">
+          <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4 class="font-display font-semibold text-navy mb-2">Satisfaction Guarantee</h4>
+          <p class="text-ink/55 text-sm leading-relaxed">Not happy in the first 90 days? Cancel without penalty. We earn your trust or you owe us nothing.</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-navy/5 text-center"
+             style="box-shadow: 0 2px 12px rgba(17,17,17,0.06);">
+          <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </div>
+          <h4 class="font-display font-semibold text-navy mb-2">Pet Damage Guarantee</h4>
+          <p class="text-ink/55 text-sm leading-relaxed">We cover pet damage up to $1,000 beyond the security deposit when we approve a tenant with a pet.</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-navy/5 text-center"
+             style="box-shadow: 0 2px 12px rgba(17,17,17,0.06);">
+          <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </div>
+          <h4 class="font-display font-semibold text-navy mb-2">Eviction Protection</h4>
+          <p class="text-ink/55 text-sm leading-relaxed">If a tenant we place requires eviction in their first year, we handle the legal process at no extra cost to you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TEAM ===================== -->
+<section id="about" class="py-24" style="background: #f6f6f6;">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">Our People</p>
+      <h2 class="font-display text-4xl lg:text-5xl text-navy font-bold" style="letter-spacing:-0.03em;">Meet the Nelson Team</h2>
+      <p class="mt-4 text-ink/60 max-w-2xl mx-auto" style="line-height:1.7;">
+        Nearly 30 years of Metro Detroit management &amp; brokerage experience — a family-rooted team with the expertise to protect and grow your investment.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="ben.jpg" alt="Ben Nelson" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Ben Nelson</h4>
+          <p class="text-gold text-xs font-medium mb-2">CEO / Principal Broker</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Ben leads the firm with a client-first philosophy and deep expertise in Metro Detroit real estate markets.</p>
+          <a href="mailto:ben@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">ben@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="daniel.jpg" alt="Daniel Nelson" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Daniel Nelson</h4>
+          <p class="text-gold text-xs font-medium mb-2">Associate Broker / Founder</p>
+          <p class="text-ink/55 text-xs leading-relaxed">The founding vision behind Nelson PM, Dan brings decades of brokerage experience and institutional knowledge.</p>
+          <a href="mailto:dan@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">dan@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="troy.jpg" alt="Troy Fonville" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Troy Fonville</h4>
+          <p class="text-gold text-xs font-medium mb-2">Associate Broker / Compliance</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Troy ensures every lease and transaction meets legal standards, keeping owners protected at every step.</p>
+          <a href="mailto:troy@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">troy@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="matt.jpg" alt="Matt Nelson" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Matt Nelson</h4>
+          <p class="text-gold text-xs font-medium mb-2">Leasing Agent / Realtor</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Matt specializes in investment acquisitions, helping owners grow their portfolios with well-positioned properties.</p>
+          <a href="mailto:matt@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">matt@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="alex.jpg" alt="Alex Serraiocco" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Alex Serraiocco</h4>
+          <p class="text-gold text-xs font-medium mb-2">Leasing Agent / Realtor</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Alex guides investors through acquisition strategy and leasing with a sharp eye for local market value.</p>
+          <a href="mailto:alex@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">alex@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="lyndsay.jpg" alt="Lyndsay Nelson" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Lyndsay Nelson</h4>
+          <p class="text-gold text-xs font-medium mb-2">Tenant Advocate / Sales Support</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Lyndsay bridges owners and tenants, ensuring smooth communication and positive resident experiences.</p>
+          <a href="mailto:lyndsay@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">lyndsay@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="alicia.jpg" alt="Alicia Kaufmann" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Alicia Kaufmann</h4>
+          <p class="text-gold text-xs font-medium mb-2">Property Manager</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Alicia manages day-to-day operations for her portfolio of properties, keeping owners informed and tenants satisfied.</p>
+          <a href="mailto:alicia@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">alicia@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="shane.jpg" alt="Shane Hampton" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Shane Hampton</h4>
+          <p class="text-gold text-xs font-medium mb-2">Maintenance Supervisor</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Shane oversees all maintenance and vendor relationships, keeping properties in top condition year-round.</p>
+          <a href="mailto:shane@nelsonpm.com" class="inline-block mt-2 text-xs text-navy/50 hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">shane@nelsonpm.com</a>
+        </div>
+      </div>
+
+      <div class="card-lift bg-white rounded-2xl overflow-hidden border border-navy/5" style="box-shadow:0 2px 16px rgba(17,17,17,0.08);">
+        <div class="relative">
+          <img src="millie.jpg" alt="Millie" class="w-full aspect-square object-cover">
+          <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,17,0.5) 0%, transparent 50%);"></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-display font-semibold text-navy text-base" style="letter-spacing:-0.01em;">Millie</h4>
+          <p class="text-gold text-xs font-medium mb-2">Office Security</p>
+          <p class="text-ink/55 text-xs leading-relaxed">Chief morale officer and guardian of the front desk. Millie takes her role very seriously — treats are appreciated.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section id="testimonials" class="py-24 bg-cream overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">What Clients Say</p>
+      <h2 class="font-display text-4xl lg:text-5xl text-navy font-bold" style="letter-spacing:-0.03em;">Trusted by Owners &amp; Tenants</h2>
+      <div class="flex items-center justify-center gap-2 mt-4">
+        <div class="stars text-xl">★★★★★</div>
+        <span class="text-navy font-semibold">4.7</span>
+        <span class="text-ink/50 text-sm">— Highest number of reviews in Metro Detroit</span>
+      </div>
+    </div>
+
+    <div class="relative">
+      <div class="overflow-hidden">
+        <div id="testimonial-track" class="testimonial-track gap-6" style="width: max-content;">
+
+          <!-- T1 -->
+          <div class="bg-white rounded-2xl p-8 w-80 sm:w-96 flex-shrink-0 border border-navy/5"
+               style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+            <div class="stars mb-4 text-lg">★★★★★</div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6" style="line-height:1.7;">
+              "Nelson PM has managed two of my rental properties for four years. The peace of mind is worth every penny — rent hits my account like clockwork and I never have to worry about maintenance calls at 2am."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center font-display font-bold text-navy text-sm">MK</div>
+              <div>
+                <div class="font-semibold text-navy text-sm">Michael K.</div>
+                <div class="text-ink/40 text-xs">Property Owner · Sterling Heights</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- T2 -->
+          <div class="bg-white rounded-2xl p-8 w-80 sm:w-96 flex-shrink-0 border border-navy/5"
+               style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+            <div class="stars mb-4 text-lg">★★★★★</div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6" style="line-height:1.7;">
+              "I was nervous handing over my dad's house after he passed, but Ben and his team treated it with care. They found excellent tenants within two weeks and handle everything professionally."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center font-display font-bold text-navy text-sm">SR</div>
+              <div>
+                <div class="font-semibold text-navy text-sm">Sandra R.</div>
+                <div class="text-ink/40 text-xs">Property Owner · Roseville</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- T3 -->
+          <div class="bg-white rounded-2xl p-8 w-80 sm:w-96 flex-shrink-0 border border-navy/5"
+               style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+            <div class="stars mb-4 text-lg">★★★★☆</div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6" style="line-height:1.7;">
+              "As a tenant, the maintenance request process is seamless. I submitted a request for a heating issue on a Sunday night and had a technician at my door by Monday morning. That's rare."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center font-display font-bold text-navy text-sm">DW</div>
+              <div>
+                <div class="font-semibold text-navy text-sm">Darius W.</div>
+                <div class="text-ink/40 text-xs">Tenant · Fraser</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- T4 -->
+          <div class="bg-white rounded-2xl p-8 w-80 sm:w-96 flex-shrink-0 border border-navy/5"
+               style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+            <div class="stars mb-4 text-lg">★★★★★</div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6" style="line-height:1.7;">
+              "Switched from a different management company and wish I'd done it sooner. The monthly reports are clear, communication is fast, and my vacancy rate has dropped significantly."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center font-display font-bold text-navy text-sm">JH</div>
+              <div>
+                <div class="font-semibold text-navy text-sm">James H.</div>
+                <div class="text-ink/40 text-xs">Multi-Unit Owner · Auburn Hills</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- T5 -->
+          <div class="bg-white rounded-2xl p-8 w-80 sm:w-96 flex-shrink-0 border border-navy/5"
+               style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+            <div class="stars mb-4 text-lg">★★★★★</div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6" style="line-height:1.7;">
+              "Lyndsay and Alicia are incredible — always responsive and genuinely care. Nelson PM doesn't just manage a building, they manage relationships. That's hard to find in this industry."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center font-display font-bold text-navy text-sm">PT</div>
+              <div>
+                <div class="font-semibold text-navy text-sm">Patricia T.</div>
+                <div class="text-ink/40 text-xs">Property Owner · Mount Clemens</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center justify-center gap-4 mt-10">
+        <button id="prev-btn" aria-label="Previous" class="w-11 h-11 rounded-full border border-navy/20 flex items-center justify-center text-navy hover:bg-navy hover:text-white hover:border-navy transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy active:scale-95">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div id="dots" class="flex gap-2"></div>
+        <button id="next-btn" aria-label="Next" class="w-11 h-11 rounded-full border border-navy/20 flex items-center justify-center text-navy hover:bg-navy hover:text-white hover:border-navy transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy active:scale-95">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Leave a review CTA -->
+    <div class="text-center mt-10">
+      <a href="https://reviews.nesthub.com/nelson-pm/" target="_blank"
+         class="inline-flex items-center gap-2 text-navy/60 hover:text-gold text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+        Leave Us a Review
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SERVICE AREA ===================== -->
+<section class="py-24" style="background: #f6f6f6;">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <p class="text-gold font-semibold text-sm tracking-widest uppercase mb-3 font-condensed">Coverage Area</p>
+        <h2 class="font-display text-4xl lg:text-5xl text-navy font-bold mb-6" style="letter-spacing:-0.03em;">We Know Metro Detroit</h2>
+        <p class="text-ink/60 mb-8" style="line-height:1.7;">
+          Serving 30+ municipalities across Macomb and Oakland County — from Fraser to Auburn Hills, we provide the local expertise your investment demands.
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
+          <!-- Cities -->
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Fraser</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Sterling Heights</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Mount Clemens</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Roseville</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Auburn Hills</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Shelby Twp.</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>St. Clair Shores</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Clinton Twp.</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Chesterfield</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Warren</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Troy</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Rochester Hills</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Utica</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>East Pointe</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Harrison Twp.</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Grosse Pointe</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Macomb Twp.</span>
+          <span class="text-navy/70 text-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold inline-block"></span>Ray Twp.</span>
+        </div>
+        <a href="#contact" class="btn-navy">Check Your Area</a>
+      </div>
+      <div class="relative rounded-2xl overflow-hidden" style="box-shadow:0 8px 40px rgba(17,17,17,0.15);">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d94489.2!2d-82.9937!3d42.5395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8824ea1c0e1a05c3%3A0x5a94b8c24e657f4a!2s32631%20Utica%20Rd%2C%20Fraser%2C%20MI%2048026!5e0!3m2!1sen!2sus!4v1711000000000!5m2!1sen!2sus"
+          width="100%" height="480" style="border:0; display:block;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade" title="Nelson Property Management location"></iframe>
+        <div class="absolute inset-x-0 bottom-0 flex items-end p-5 pointer-events-none" style="background:linear-gradient(to top,rgba(17,17,17,0.75) 0%,transparent 70%);">
+          <div class="text-white">
+            <div class="font-display font-bold text-xl" style="letter-spacing:-0.02em;">Macomb &amp; Oakland County</div>
+            <div class="text-white/70 text-sm">30+ Municipalities · Metro Detroit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- CTA Band -->
+    <div class="rounded-2xl mb-16 p-10 text-center relative overflow-hidden grain"
+         style="background: linear-gradient(135deg, #9F2526 0%, #7a1c1d 100%); box-shadow: 0 8px 40px rgba(159,37,38,0.35);">
+      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 70% 80% at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);"></div>
+      <h2 class="font-display text-3xl lg:text-4xl text-white font-bold relative z-10" style="letter-spacing:-0.03em;">Ready to maximize your investment?</h2>
+      <p class="text-white/80 mt-2 mb-6 relative z-10" style="line-height:1.7;">Get a free rental analysis and see what Nelson PM can do for your property.</p>
+      <div class="flex flex-wrap justify-center gap-4 relative z-10">
+        <a href="tel:5862946800" class="bg-white text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold-pale transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+           style="box-shadow:0 4px 16px rgba(17,17,17,0.2);">
+          📞 586.294.6800
+        </a>
+        <a href="mailto:ben@nelsonpm.com" class="border border-white/50 text-white font-medium px-6 py-3 rounded-lg hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+          ✉ ben@nelsonpm.com
+        </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+      <!-- Contact info -->
+      <div>
+        <h2 class="font-display text-3xl text-navy font-bold mb-6" style="letter-spacing:-0.03em;">Get In Touch</h2>
+        <div class="space-y-5 mb-8">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-navy text-sm">Office Address</div>
+              <div class="text-ink/60 text-sm mt-0.5">32631 Utica Rd, Fraser, MI 48026</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 014 5.18 2 2 0 016 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L10.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 17.92v-.01z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-navy text-sm">Phone</div>
+              <a href="tel:5862946800" class="text-gold hover:text-gold-dark text-sm mt-0.5 block transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">586.294.6800</a>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2526" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-navy text-sm">Email</div>
+              <a href="mailto:ben@nelsonpm.com" class="text-gold hover:text-gold-dark text-sm mt-0.5 block transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">ben@nelsonpm.com</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social links -->
+        <div class="flex gap-3">
+          <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook"
+             class="w-10 h-10 rounded-lg border border-navy/15 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy/30 hover:bg-navy/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram"
+             class="w-10 h-10 rounded-lg border border-navy/15 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy/30 hover:bg-navy/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" aria-label="LinkedIn"
+             class="w-10 h-10 rounded-lg border border-navy/15 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy/30 hover:bg-navy/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube"
+             class="w-10 h-10 rounded-lg border border-navy/15 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy/30 hover:bg-navy/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75,15.02 15.5,12 9.75,8.98 9.75,15.02" fill="#fff"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="bg-white rounded-2xl p-8 border border-navy/5" style="box-shadow:0 4px 24px rgba(17,17,17,0.08);">
+        <!-- Tabs -->
+        <div class="flex rounded-lg overflow-hidden border border-navy/10 mb-6 text-sm font-medium">
+          <button onclick="switchTab('owner')" id="tab-owner" class="tab-btn flex-1 py-2.5 text-navy/60 hover:text-navy transition-colors active focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">Owner</button>
+          <button onclick="switchTab('renter')" id="tab-renter" class="tab-btn flex-1 py-2.5 text-navy/60 hover:text-navy transition-colors border-x border-navy/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">Renter</button>
+          <button onclick="switchTab('vendor')" id="tab-vendor" class="tab-btn flex-1 py-2.5 text-navy/60 hover:text-navy transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy">Vendor</button>
+        </div>
+
+        <form onsubmit="return false;" class="space-y-4">
+          <div id="pane-owner" class="tab-pane active">
+            <p class="text-ink/50 text-xs mb-4">For property owners interested in our management services.</p>
+          </div>
+          <div id="pane-renter" class="tab-pane">
+            <p class="text-ink/50 text-xs mb-4">Looking for a rental property or have a tenant inquiry?</p>
+          </div>
+          <div id="pane-vendor" class="tab-pane">
+            <p class="text-ink/50 text-xs mb-4">Vendors and contractors interested in joining our network.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-navy/70 mb-1.5">First Name</label>
+              <input type="text" placeholder="John" class="w-full border border-navy/15 rounded-lg px-3 py-2.5 text-sm text-navy placeholder-navy/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-[border-color,box-shadow] duration-150">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-navy/70 mb-1.5">Last Name</label>
+              <input type="text" placeholder="Smith" class="w-full border border-navy/15 rounded-lg px-3 py-2.5 text-sm text-navy placeholder-navy/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-[border-color,box-shadow] duration-150">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-navy/70 mb-1.5">Email</label>
+            <input type="email" placeholder="john@email.com" class="w-full border border-navy/15 rounded-lg px-3 py-2.5 text-sm text-navy placeholder-navy/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-[border-color,box-shadow] duration-150">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-navy/70 mb-1.5">Phone</label>
+            <input type="tel" placeholder="586-000-0000" class="w-full border border-navy/15 rounded-lg px-3 py-2.5 text-sm text-navy placeholder-navy/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-[border-color,box-shadow] duration-150">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-navy/70 mb-1.5">Message</label>
+            <textarea rows="3" placeholder="Tell us about your property or inquiry..." class="w-full border border-navy/15 rounded-lg px-3 py-2.5 text-sm text-navy placeholder-navy/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-[border-color,box-shadow] duration-150 resize-none"></textarea>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">
+            Send Message
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="bg-navy text-white">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+      <!-- Brand -->
+      <div>
+        <div class="mb-4">
+          <img src="Logo-nav.png" alt="Nelson Property Management" class="h-14 w-auto">
+        </div>
+        <p class="text-white/50 text-sm leading-relaxed mb-4" style="line-height:1.7;">Less Stress, More Profit — Veteran Owned &amp; Operated serving Metro Detroit for over 10 years.</p>
+        <div class="flex gap-2.5">
+          <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" aria-label="LinkedIn" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75,15.02 15.5,12 9.75,8.98 9.75,15.02" fill="#111111"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Owners -->
+      <div>
+        <h4 class="font-semibold text-white text-sm mb-4">For Owners</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#services" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Our Services</a></li>
+          <li><a href="#pricing"  class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Pricing &amp; Guarantees</a></li>
+          <li><a href="#contact"  class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Owner Onboarding</a></li>
+          <li><a href="https://nelsonpropertymanagement.rentvine.com/portals/owner/" target="_blank" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Owner Portal</a></li>
+          <li><a href="#contact"  class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Owner FAQs</a></li>
+        </ul>
+      </div>
+
+      <!-- Tenants -->
+      <div>
+        <h4 class="font-semibold text-white text-sm mb-4">For Tenants</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#contact" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Maintenance Request</a></li>
+          <li><a href="https://nelsonpropertymanagement.rentvine.com/portals/resident/" target="_blank" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Tenant Portal</a></li>
+          <li><a href="#contact" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Tenant FAQs</a></li>
+          <li><a href="#contact" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Resident Benefits</a></li>
+          <li><a href="https://reviews.nesthub.com/nelson-pm/" target="_blank" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Leave a Review</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="font-semibold text-white text-sm mb-4">Contact</h4>
+        <ul class="space-y-3">
+          <li class="text-white/50 text-sm">32631 Utica Rd<br>Fraser, MI 48026</li>
+          <li><a href="tel:5862946800" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">586.294.6800</a></li>
+          <li><a href="mailto:ben@nelsonpm.com" class="text-white/50 hover:text-gold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">ben@nelsonpm.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-white/30 text-xs">© 2026 Nelson Property Management. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="#" class="text-white/30 hover:text-white/60 text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Privacy Policy</a>
+        <a href="#" class="text-white/30 hover:text-white/60 text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Accessibility</a>
+        <a href="#" class="text-white/30 hover:text-white/60 text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold rounded">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== JS ===================== -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+
+// Hero image carousel
+const heroSlides = document.querySelectorAll('.hero-slide');
+const heroDots  = document.querySelectorAll('.hero-dot');
+let heroSlideIdx = 0;
+
+function goToHeroSlide(idx) {
+  heroSlides[heroSlideIdx].classList.remove('active');
+  heroDots[heroSlideIdx].style.width   = '0.375rem';
+  heroDots[heroSlideIdx].style.opacity = '0.4';
+  heroSlideIdx = (idx + heroSlides.length) % heroSlides.length;
+  heroSlides[heroSlideIdx].classList.add('active');
+  heroDots[heroSlideIdx].style.width   = '1.5rem';
+  heroDots[heroSlideIdx].style.opacity = '1';
+}
+
+heroDots.forEach((dot, i) => dot.addEventListener('click', () => {
+  clearInterval(heroTimer);
+  goToHeroSlide(i);
+  heroTimer = setInterval(() => goToHeroSlide(heroSlideIdx + 1), 5000);
+}));
+
+let heroTimer = setInterval(() => goToHeroSlide(heroSlideIdx + 1), 5000);
+
+// Sticky nav
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Mobile menu
+const toggle = document.getElementById('menu-toggle');
+const menu   = document.getElementById('mobile-menu');
+const iconO  = document.getElementById('icon-open');
+const iconC  = document.getElementById('icon-close');
+
+toggle.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  iconO.classList.toggle('hidden', open);
+  iconC.classList.toggle('hidden', !open);
+  toggle.setAttribute('aria-expanded', open);
+});
+
+// Close mobile menu on link click
+menu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    menu.classList.remove('open');
+    iconO.classList.remove('hidden');
+    iconC.classList.add('hidden');
+  });
+});
+
+// Contact form tabs
+function switchTab(name) {
+  ['owner','renter','vendor'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    document.getElementById('pane-' + t).classList.toggle('active', t === name);
+  });
+}
+
+// Testimonial carousel
+const track = document.getElementById('testimonial-track');
+const dotsEl = document.getElementById('dots');
+const cards  = track.querySelectorAll(':scope > div');
+const total  = cards.length;
+let current  = 0;
+
+// Build dots
+cards.forEach((_, i) => {
+  const d = document.createElement('button');
+  d.className = 'w-2 h-2 rounded-full transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy';
+  d.setAttribute('aria-label', `Go to testimonial ${i + 1}`);
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function cardWidth() {
+  return cards[0].getBoundingClientRect().width + 24; // gap-6 = 24px
+}
+
+function goTo(idx) {
+  current = (idx + total) % total;
+  track.style.transform = `translateX(-${current * cardWidth()}px)`;
+  dotsEl.querySelectorAll('button').forEach((d, i) => {
+    d.style.background = i === current ? '#9F2526' : 'rgba(17,17,17,0.2)';
+    d.style.width = i === current ? '1.5rem' : '0.5rem';
+  });
+}
+
+requestAnimationFrame(() => goTo(0));
+
+document.getElementById('prev-btn').addEventListener('click', () => goTo(current - 1));
+document.getElementById('next-btn').addEventListener('click', () => goTo(current + 1));
+
+// Auto-advance every 6s
+let autoplay = setInterval(() => goTo(current + 1), 6000);
+track.addEventListener('mouseenter', () => clearInterval(autoplay));
+track.addEventListener('mouseleave', () => { autoplay = setInterval(() => goTo(current + 1), 6000); });
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// Fade-in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card-lift').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition += ', opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.2,0.64,1)';
+  observer.observe(el);
+});
+
+}); // end DOMContentLoaded
+</script>
+
+</body>
+</html>
