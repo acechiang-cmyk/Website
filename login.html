@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Nelson CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: #111; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.card {
+  background: #fff; border-radius: 24px; padding: 48px 44px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+}
+.logo { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; color: #111; margin-bottom: 32px; }
+.logo span { color: #9F2526; }
+h1 { font-family: 'Libre Baskerville', serif; font-size: 24px; margin-bottom: 6px; }
+.sub { color: #6b7280; font-size: 14px; margin-bottom: 32px; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151; }
+.field input {
+  width: 100%; padding: 11px 14px; border: 1px solid #e5e7eb;
+  border-radius: 10px; font-size: 15px; font-family: inherit;
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus { border-color: #9F2526; box-shadow: 0 0 0 3px rgba(159,37,38,0.08); }
+.btn {
+  width: 100%; padding: 13px; background: #9F2526; color: #fff;
+  border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit; margin-top: 8px;
+  transition: background 0.15s;
+}
+.btn:hover { background: #7a1c1d; }
+.btn:disabled { background: #ddd; cursor: default; }
+.error { color: #dc2626; font-size: 13px; margin-top: 12px; display: none; }
+.signup-link { text-align: center; margin-top: 20px; font-size: 13px; color: #6b7280; }
+.signup-link a { color: #9F2526; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Nelson <span>CRM</span></div>
+  <h1>Welcome back</h1>
+  <p class="sub">Sign in to your agency workspace.</p>
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="you@agency.com" autocomplete="email">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+  </div>
+
+  <button class="btn" id="login-btn">Sign in</button>
+  <p class="error" id="error"></p>
+</div>
+
+<script>
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('error');
+  err.style.display = 'none';
+
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    err.textContent = 'Please fill in all fields.'; err.style.display = 'block'; return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      err.textContent = data.detail || 'Invalid credentials.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Sign in';
+      return;
+    }
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('agency', JSON.stringify(data.agency));
+    localStorage.setItem('user', JSON.stringify(data.user));
+    window.location.href = '/admin.html';
+  } catch (e) {
+    err.textContent = 'Could not reach server: ' + e.message;
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
+});
+
+['email','password'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('login-btn').click();
+  });
+});
+</script>
+</body>
+</html>

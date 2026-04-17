@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nelson CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0f2137;
+  --red: #9F2526;
+  --cream: #f9f6f1;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --sidebar: 220px;
+}
+body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: var(--cream); color: #111; display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ── */
+.sidebar { width: var(--sidebar); background: var(--navy); display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-logo { padding: 24px 20px 20px; font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logo span { color: #e87878; }
+nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+.nav-section { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); text-transform: uppercase; padding: 14px 10px 6px; }
+.nav-spacer { flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.65); background: none; border: none; cursor: pointer; width: 100%; text-align: left; transition: background 0.15s, color 0.15s; }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,0.12); color: #fff; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-user { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: rgba(255,255,255,0.5); }
+.nav-user strong { display: block; color: rgba(255,255,255,0.85); font-size: 13px; margin-bottom: 2px; }
+
+/* ── Content ── */
+.content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.panel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.panel.active { display: flex; }
+.pane-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.pane-header h2 { font-size: 18px; font-weight: 700; }
+.btn-primary { background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.btn-primary:hover { background: #7a1c1d; }
+.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.btn-secondary:hover { background: #e5e7eb; }
+.btn-cancel { background: none; color: var(--muted); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+
+/* ── Dashboard ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px; }
+.stat-card { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+.stat-clickable { cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+.stat-clickable:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #9F2526; }
+.stat-clickable.active-stat { border-color: #9F2526; box-shadow: 0 0 0 3px rgba(159,37,38,0.1); }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--navy); margin-top: 6px; }
+.recent-leads { padding: 0 24px 24px; flex: 1; overflow-y: auto; }
+.recent-leads h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+.lead-row { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; border: 1px solid var(--border); cursor: pointer; transition: box-shadow 0.15s; }
+.lead-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.lead-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.lead-info { flex: 1; min-width: 0; }
+.lead-name { font-size: 14px; font-weight: 600; }
+.lead-sub { font-size: 12px; color: var(--muted); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-hot   { background: #fee2e2; color: #991b1b; }
+.badge-warm  { background: #fef3c7; color: #92400e; }
+.badge-cold  { background: #dbeafe; color: #1e40af; }
+.badge-new      { background: #dbeafe; color: #1d4ed8; }
+.badge-contacted { background: #fef3c7; color: #92400e; }
+.badge-nurture  { background: #f3e8ff; color: #6b21a8; }
+.badge-showing  { background: #dcfce7; color: #166534; }
+.badge-closed   { background: #d1fae5; color: #065f46; }
+
+/* ── Leads list ── */
+.leads-table { padding: 20px 24px; overflow-y: auto; flex: 1; }
+.table-filters { display: flex; gap: 10px; margin-bottom: 16px; }
+.table-filters input, .table-filters select {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: inherit; outline: none; background: #fff;
+}
+.table-filters input:focus, .table-filters select:focus { border-color: var(--red); }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); font-size: 13px; }
+th { background: #f9fafb; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+td { padding: 11px 14px; border-bottom: 1px solid #f3f4f6; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+tr { cursor: pointer; }
+
+/* ── Pipeline ── */
+.pipeline-board { display: flex; gap: 16px; padding: 20px; overflow-x: auto; flex: 1; align-items: flex-start; }
+.pipeline-col { width: 240px; flex-shrink: 0; }
+.col-header { border-radius: 8px 8px 0 0; padding: 10px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.col-body { background: #f3f4f6; border-radius: 0 0 8px 8px; min-height: 200px; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.pipeline-card { background: #fff; border-radius: 8px; padding: 12px; font-size: 13px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; transition: box-shadow 0.15s; }
+.pipeline-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.10); }
+.pipeline-card .card-name { font-weight: 600; margin-bottom: 4px; }
+.pipeline-card .card-sub  { font-size: 11px; color: var(--muted); }
+.stage-new      .col-header { background: #dbeafe; color: #1d4ed8; }
+.stage-contacted .col-header { background: #fef3c7; color: #92400e; }
+.stage-nurture  .col-header { background: #f3e8ff; color: #6b21a8; }
+.stage-showing  .col-header { background: #dcfce7; color: #166534; }
+.stage-closed   .col-header { background: #d1fae5; color: #065f46; }
+
+/* ── Lead detail drawer ── */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; display: none; }
+.drawer-overlay.open { display: block; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 480px; background: #fff; box-shadow: -4px 0 32px rgba(0,0,0,0.12); z-index: 101; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); }
+.drawer.open { transform: translateX(0); }
+.drawer-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.drawer-close { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; padding: 4px; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
+.drawer-section { margin-bottom: 24px; }
+.drawer-section h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-item label { font-size: 11px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 2px; }
+.info-item span { font-size: 14px; }
+.chat-bubble { margin-bottom: 10px; }
+.chat-bubble .bubble { display: inline-block; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 85%; }
+.chat-bubble.user .bubble { background: var(--navy); color: #fff; border-radius: 12px 12px 4px 12px; }
+.chat-bubble.assistant .bubble { background: #f3f4f6; color: #111; border-radius: 12px 12px 12px 4px; }
+.chat-bubble.user { text-align: right; }
+.stage-select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; }
+
+/* ── Contacts ── */
+.contacts-grid { padding: 20px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; overflow-y: auto; flex: 1; }
+.contact-card { background: #fff; border-radius: 12px; padding: 18px; border: 1px solid var(--border); }
+.contact-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.contact-sub { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.contact-meta { font-size: 12px; color: #374151; display: flex; flex-direction: column; gap: 3px; }
+.contact-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ── Team ── */
+.team-grid { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; overflow-y: auto; }
+.team-card { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+.team-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+.team-info .name { font-weight: 700; }
+.team-info .email { font-size: 12px; color: var(--muted); }
+.team-info .role { font-size: 11px; font-weight: 600; margin-top: 4px; display: inline-block; padding: 2px 8px; border-radius: 20px; background: #f3f4f6; color: #374151; }
+
+/* ── Modals ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: none; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 460px; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; font-family: inherit; outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--red); }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.no-items { color: var(--muted); font-size: 14px; padding: 32px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">Nelson <span>CRM</span></div>
+  <nav>
+    <div class="nav-section">Workspace</div>
+    <button class="nav-item active" data-panel="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-panel="leads">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Leads
+    </button>
+    <button class="nav-item" data-panel="pipeline">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Pipeline
+    </button>
+    <button class="nav-item" data-panel="contacts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Contacts
+    </button>
+    <div class="nav-spacer"></div>
+    <div class="nav-section">Admin</div>
+    <button class="nav-item" data-panel="team">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Team
+    </button>
+  </nav>
+  <div class="nav-user">
+    <strong id="nav-username">Loading…</strong>
+    <span id="nav-agency"></span>
+    <br><a href="#" id="logout-link" style="color:rgba(255,255,255,0.4);font-size:12px;text-decoration:none;margin-top:4px;display:inline-block">Sign out</a>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Dashboard -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="pane-header">
+      <h2>Dashboard</h2>
+      <span id="agency-name-header" style="font-size:13px;color:var(--muted)"></span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card stat-clickable active-stat" data-filter="all"  onclick="filterDashboard('all')"> <div class="stat-label">Total Leads</div><div class="stat-value" id="stat-total">—</div></div>
+      <div class="stat-card stat-clickable"              data-filter="new"  onclick="filterDashboard('new')"> <div class="stat-label">New</div>        <div class="stat-value" id="stat-new">—</div></div>
+      <div class="stat-card stat-clickable"              data-filter="showing" onclick="filterDashboard('showing')"><div class="stat-label">Showing</div>   <div class="stat-value" id="stat-showing">—</div></div>
+      <div class="stat-card stat-clickable"              data-filter="closed" onclick="filterDashboard('closed')"><div class="stat-label">Closed</div>    <div class="stat-value" id="stat-closed">—</div></div>
+    </div>
+    <div class="recent-leads">
+      <h3 id="dash-list-title">All Leads</h3>
+      <div id="recent-leads-list"></div>
+    </div>
+  </div>
+
+  <!-- Leads -->
+  <div class="panel" id="panel-leads">
+    <div class="pane-header">
+      <h2>Leads</h2>
+      <button class="btn-secondary" id="export-btn">Export CSV</button>
+    </div>
+    <div class="leads-table">
+      <div class="table-filters">
+        <input type="text" id="leads-search" placeholder="Search name, email, phone…" style="flex:1">
+        <select id="leads-stage-filter">
+          <option value="">All Stages</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="nurture">Nurture</option>
+          <option value="showing">Showing</option>
+          <option value="closed">Closed</option>
+        </select>
+        <select id="leads-score-filter">
+          <option value="">All Scores</option>
+          <option value="hot">Hot</option>
+          <option value="warm">Warm</option>
+          <option value="cold">Cold</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Phone</th><th>Score</th><th>Stage</th><th>Source</th><th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="leads-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="panel" id="panel-pipeline">
+    <div class="pane-header"><h2>Pipeline</h2></div>
+    <div class="pipeline-board">
+      <div class="pipeline-col stage-new">
+        <div class="col-header">New</div>
+        <div class="col-body" id="stage-new"></div>
+      </div>
+      <div class="pipeline-col stage-contacted">
+        <div class="col-header">Contacted</div>
+        <div class="col-body" id="stage-contacted"></div>
+      </div>
+      <div class="pipeline-col stage-nurture">
+        <div class="col-header">Nurture</div>
+        <div class="col-body" id="stage-nurture"></div>
+      </div>
+      <div class="pipeline-col stage-showing">
+        <div class="col-header">Showing</div>
+        <div class="col-body" id="stage-showing"></div>
+      </div>
+      <div class="pipeline-col stage-closed">
+        <div class="col-header">Closed</div>
+        <div class="col-body" id="stage-closed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contacts -->
+  <div class="panel" id="panel-contacts">
+    <div class="pane-header">
+      <h2>Contacts</h2>
+      <button class="btn-primary" id="new-contact-btn">+ Add Contact</button>
+    </div>
+    <div class="contacts-grid" id="contacts-grid"></div>
+  </div>
+
+  <!-- Team -->
+  <div class="panel" id="panel-team">
+    <div class="pane-header">
+      <h2>Team</h2>
+      <button class="btn-primary" id="invite-btn">+ Invite Member</button>
+    </div>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+
+</div>
+
+<!-- Lead Drawer -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="lead-drawer">
+  <div class="drawer-header">
+    <div>
+      <div style="font-size:18px;font-weight:700" id="drawer-name">Lead</div>
+      <div style="font-size:13px;color:var(--muted)" id="drawer-sub"></div>
+    </div>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <h4>Details</h4>
+      <div class="info-grid">
+        <div class="info-item"><label>Email</label><span id="d-email">—</span></div>
+        <div class="info-item"><label>Phone</label><span id="d-phone">—</span></div>
+        <div class="info-item"><label>Score</label><span id="d-score">—</span></div>
+        <div class="info-item"><label>Source</label><span id="d-source">—</span></div>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <h4>Stage</h4>
+      <select class="stage-select" id="d-stage">
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="nurture">Nurture</option>
+        <option value="showing">Showing</option>
+        <option value="closed">Closed</option>
+      </select>
+      <button class="btn-primary" style="margin-top:10px;width:100%" id="d-save-stage">Save Stage</button>
+    </div>
+    <div class="drawer-section">
+      <h4>Notes</h4>
+      <p id="d-notes" style="font-size:13px;color:#374151;line-height:1.6">—</p>
+    </div>
+    <div class="drawer-section">
+      <h4>Chat History</h4>
+      <div id="d-chat"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Invite Modal -->
+<div class="modal-overlay" id="invite-modal">
+  <div class="modal">
+    <h3>Invite Team Member</h3>
+    <div class="field"><label>Name</label><input type="text" id="inv-name" placeholder="Agent name"></div>
+    <div class="field"><label>Email</label><input type="email" id="inv-email" placeholder="agent@agency.com"></div>
+    <div class="field"><label>Temporary Password</label><input type="password" id="inv-password" placeholder="Min 8 characters"></div>
+    <div class="field"><label>Role</label>
+      <select id="inv-role"><option value="agent">Agent</option><option value="admin">Admin</option></select>
+    </div>
+    <p id="inv-error" style="color:#dc2626;font-size:13px;display:none"></p>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="inv-cancel">Cancel</button>
+      <button class="btn-primary" id="inv-submit">Invite</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Contact Modal -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal">
+    <h3>Add Contact</h3>
+    <div class="field"><label>Name *</label><input type="text" id="c-name" placeholder="Full name"></div>
+    <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="email@example.com"></div>
+    <div class="field"><label>Phone</label><input type="tel" id="c-phone" placeholder="(555) 000-0000"></div>
+    <div class="field"><label>Budget Range</label>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="c-bmin" placeholder="Min $">
+        <input type="number" id="c-bmax" placeholder="Max $">
+      </div>
+    </div>
+    <div class="field"><label>Timeline</label><input type="text" id="c-timeline" placeholder="e.g. 3-6 months"></div>
+    <div class="field"><label>Tags (comma-separated)</label><input type="text" id="c-tags" placeholder="investor, first-time, luxury"></div>
+    <div class="field"><label>Notes</label><textarea id="c-notes" rows="2" placeholder="Additional notes…"></textarea></div>
+    <p id="c-error" style="color:#dc2626;font-size:13px;display:none"></p>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="c-cancel">Cancel</button>
+      <button class="btn-primary" id="c-submit">Add Contact</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOKEN  = localStorage.getItem('token');
+const AGENCY = JSON.parse(localStorage.getItem('agency') || '{}');
+const USER   = JSON.parse(localStorage.getItem('user')   || '{}');
+
+if (!TOKEN) window.location.href = '/login.html';
+
+document.getElementById('nav-username').textContent = USER.name || 'User';
+document.getElementById('nav-agency').textContent   = AGENCY.name || '';
+document.getElementById('agency-name-header').textContent = AGENCY.name || '';
+
+document.getElementById('logout-link').addEventListener('click', async e => {
+  e.preventDefault();
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+  localStorage.clear();
+  window.location.href = '/login.html';
+});
+
+async function api(url, opts = {}) {
+  return fetch(url, {
+    ...opts,
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}`, ...(opts.headers || {}) }
+  });
+}
+
+// ── Panel switching ────────────────────────────────────────────────────────────
+let allLeads = [];
+let allTeam = [];
+
+document.querySelectorAll('.nav-item[data-panel]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    if (btn.dataset.panel === 'leads')    loadLeads();
+    if (btn.dataset.panel === 'pipeline') loadPipeline();
+    if (btn.dataset.panel === 'contacts') loadContacts();
+    if (btn.dataset.panel === 'team')     loadTeam();
+  });
+});
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+let dashFilter = 'all';
+
+async function loadDashboard() {
+  const [statsRes, leadsRes] = await Promise.all([api('/api/stats'), api('/api/leads')]);
+  if (statsRes.ok) {
+    const s = await statsRes.json();
+    document.getElementById('stat-total').textContent   = s.total;
+    document.getElementById('stat-new').textContent     = s.new;
+    document.getElementById('stat-showing').textContent = s.showing;
+    document.getElementById('stat-closed').textContent  = s.closed;
+  }
+  if (leadsRes.ok) {
+    allLeads = await leadsRes.json();
+    renderDashLeads();
+  }
+}
+
+function filterDashboard(filter) {
+  dashFilter = filter;
+  document.querySelectorAll('.stat-clickable').forEach(c => {
+    c.classList.toggle('active-stat', c.dataset.filter === filter);
+  });
+  const titles = { all: 'All Leads', new: 'New Leads', showing: 'Showing', closed: 'Closed' };
+  document.getElementById('dash-list-title').textContent = titles[filter] || 'Leads';
+  renderDashLeads();
+}
+
+function renderDashLeads() {
+  const list = document.getElementById('recent-leads-list');
+  const filtered = dashFilter === 'all'
+    ? allLeads
+    : allLeads.filter(l => (l.stage || 'new') === dashFilter);
+  if (!filtered.length) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:14px">No ${dashFilter === 'all' ? '' : dashFilter + ' '}leads yet.</p>`;
+    return;
+  }
+  list.innerHTML = filtered.map(l => `
+    <div class="lead-row" onclick="openDrawer(${l.id})">
+      <div class="lead-avatar">${initials(l.name)}</div>
+      <div class="lead-info">
+        <div class="lead-name">${esc(l.name || 'Unknown')}</div>
+        <div class="lead-sub">${esc(l.email || l.phone || 'No contact info')}</div>
+      </div>
+      <span class="badge badge-${l.score || 'warm'}">${l.score || 'warm'}</span>
+      <span class="badge badge-${l.stage || 'new'}" style="margin-left:6px">${l.stage || 'new'}</span>
+      <span style="font-size:11px;color:var(--muted);margin-left:auto">${relTime(l.created_at)}</span>
+    </div>`).join('');
+}
+
+// ── Leads table ───────────────────────────────────────────────────────────────
+async function loadLeads() {
+  const res = await api('/api/leads');
+  if (!res.ok) return;
+  allLeads = await res.json();
+  renderLeadsTable(allLeads);
+}
+
+function renderLeadsTable(leads) {
+  const tbody = document.getElementById('leads-tbody');
+  if (!leads.length) { tbody.innerHTML = '<tr><td colspan="7" class="no-items">No leads yet.</td></tr>'; return; }
+  tbody.innerHTML = leads.map(l => `
+    <tr onclick="openDrawer(${l.id})">
+      <td><strong>${esc(l.name || '—')}</strong></td>
+      <td>${esc(l.email || '—')}</td>
+      <td>${esc(l.phone || '—')}</td>
+      <td><span class="badge badge-${l.score || 'warm'}">${l.score || 'warm'}</span></td>
+      <td><span class="badge badge-${l.stage || 'new'}">${l.stage || 'new'}</span></td>
+      <td>${esc(l.source || '—')}</td>
+      <td>${relTime(l.created_at)}</td>
+    </tr>`).join('');
+}
+
+document.getElementById('leads-search').addEventListener('input', filterLeads);
+document.getElementById('leads-stage-filter').addEventListener('change', filterLeads);
+document.getElementById('leads-score-filter').addEventListener('change', filterLeads);
+
+function filterLeads() {
+  const q     = document.getElementById('leads-search').value.toLowerCase();
+  const stage = document.getElementById('leads-stage-filter').value;
+  const score = document.getElementById('leads-score-filter').value;
+  const filtered = allLeads.filter(l => {
+    const text = `${l.name} ${l.email} ${l.phone}`.toLowerCase();
+    return (!q || text.includes(q)) && (!stage || l.stage === stage) && (!score || l.score === score);
+  });
+  renderLeadsTable(filtered);
+}
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  window.location.href = '/api/leads/export/csv';
+});
+
+// ── Pipeline ──────────────────────────────────────────────────────────────────
+async function loadPipeline() {
+  const [leadsRes, teamRes] = await Promise.all([api('/api/leads'), api('/api/team')]);
+  if (!leadsRes.ok) return;
+  allLeads = await leadsRes.json();
+  if (teamRes.ok) allTeam = await teamRes.json();
+  ['new','contacted','nurture','showing','closed'].forEach(stage => {
+    const col = document.getElementById('stage-' + stage);
+    const leads = allLeads.filter(l => (l.stage || 'new') === stage);
+    col.innerHTML = leads.length
+      ? leads.map(l => {
+          const agent = allTeam.find(m => m.id === l.assigned_to);
+          return `
+          <div class="pipeline-card" onclick="openDrawer(${l.id})">
+            <div class="card-name">${esc(l.name || 'Unknown')}</div>
+            <div class="card-sub">${esc(l.email || l.phone || 'No contact info')}</div>
+            <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between">
+              <span class="badge badge-${l.score || 'warm'}">${l.score || 'warm'}</span>
+              ${agent ? `<span style="font-size:11px;color:var(--muted)">${esc(agent.name)}</span>` : ''}
+            </div>
+          </div>`;}).join('')
+      : '<div style="font-size:12px;color:var(--muted);padding:8px;text-align:center">Empty</div>';
+  });
+}
+
+// ── Lead Drawer ───────────────────────────────────────────────────────────────
+let currentLeadId = null;
+
+async function openDrawer(leadId) {
+  currentLeadId = leadId;
+  const res = await api(`/api/leads/${leadId}`);
+  if (!res.ok) return;
+  const l = await res.json();
+
+  document.getElementById('drawer-name').textContent = l.name || 'Unknown Lead';
+  document.getElementById('drawer-sub').textContent  = l.email || l.phone || '';
+  document.getElementById('d-email').textContent     = l.email || '—';
+  document.getElementById('d-phone').textContent     = l.phone || '—';
+  document.getElementById('d-score').innerHTML       = `<span class="badge badge-${l.score || 'warm'}">${l.score || 'warm'}</span>`;
+  document.getElementById('d-source').textContent    = l.source || '—';
+  document.getElementById('d-notes').textContent     = l.notes || '—';
+  document.getElementById('d-stage').value           = l.stage || 'new';
+
+  const chat = document.getElementById('d-chat');
+  if (l.messages && l.messages.length) {
+    chat.innerHTML = l.messages.map(m => `
+      <div class="chat-bubble ${m.role}">
+        <div class="bubble">${esc(m.content)}</div>
+      </div>`).join('');
+  } else {
+    chat.innerHTML = '<p style="font-size:13px;color:var(--muted)">No chat history.</p>';
+  }
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('lead-drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('lead-drawer').classList.remove('open');
+  currentLeadId = null;
+}
+
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+
+document.getElementById('d-save-stage').addEventListener('click', async () => {
+  if (!currentLeadId) return;
+  const stage = document.getElementById('d-stage').value;
+  await api(`/api/leads/${currentLeadId}`, { method: 'PATCH', body: JSON.stringify({ stage }) });
+  closeDrawer();
+  loadDashboard();
+  if (document.getElementById('panel-pipeline').classList.contains('active')) loadPipeline();
+  if (document.getElementById('panel-leads').classList.contains('active')) loadLeads();
+});
+
+// ── Contacts ──────────────────────────────────────────────────────────────────
+async function loadContacts() {
+  const res = await api('/api/contacts');
+  if (!res.ok) return;
+  const contacts = await res.json();
+  const grid = document.getElementById('contacts-grid');
+  if (!contacts.length) {
+    grid.innerHTML = '<p class="no-items" style="grid-column:1/-1">No contacts yet. Add your first contact to track buyer/renter preferences.</p>';
+    return;
+  }
+  grid.innerHTML = contacts.map(c => `
+    <div class="contact-card">
+      <div class="contact-name">${esc(c.name)}</div>
+      <div class="contact-sub">${esc(c.email || '')} ${c.phone ? '· ' + esc(c.phone) : ''}</div>
+      <div class="contact-meta">
+        ${c.budget_min || c.budget_max ? `<span>Budget: $${(c.budget_min||0).toLocaleString()} – $${(c.budget_max||0).toLocaleString()}</span>` : ''}
+        ${c.timeline ? `<span>Timeline: ${esc(c.timeline)}</span>` : ''}
+        ${c.tags ? `<span>Tags: ${esc(c.tags)}</span>` : ''}
+        ${c.notes ? `<span style="color:var(--muted)">${esc(c.notes)}</span>` : ''}
+      </div>
+      <div class="contact-actions">
+        <button class="btn-secondary" style="font-size:12px;padding:5px 10px" onclick="deleteContact(${c.id})">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+async function deleteContact(id) {
+  if (!confirm('Remove this contact?')) return;
+  await api(`/api/contacts/${id}`, { method: 'DELETE' });
+  loadContacts();
+}
+
+document.getElementById('new-contact-btn').addEventListener('click', () => {
+  document.getElementById('contact-modal').classList.add('open');
+});
+document.getElementById('c-cancel').addEventListener('click', () => {
+  document.getElementById('contact-modal').classList.remove('open');
+});
+document.getElementById('c-submit').addEventListener('click', async () => {
+  const err = document.getElementById('c-error');
+  err.style.display = 'none';
+  const name = document.getElementById('c-name').value.trim();
+  if (!name) { err.textContent = 'Name is required.'; err.style.display = 'block'; return; }
+  const body = {
+    name, email: document.getElementById('c-email').value.trim(),
+    phone: document.getElementById('c-phone').value.trim(),
+    budget_min: parseInt(document.getElementById('c-bmin').value) || null,
+    budget_max: parseInt(document.getElementById('c-bmax').value) || null,
+    timeline: document.getElementById('c-timeline').value.trim(),
+    tags: document.getElementById('c-tags').value.trim(),
+    notes: document.getElementById('c-notes').value.trim(),
+  };
+  const res = await api('/api/contacts', { method: 'POST', body: JSON.stringify(body) });
+  if (!res.ok) { err.textContent = 'Failed to add contact.'; err.style.display = 'block'; return; }
+  document.getElementById('contact-modal').classList.remove('open');
+  ['c-name','c-email','c-phone','c-bmin','c-bmax','c-timeline','c-tags','c-notes'].forEach(id => document.getElementById(id).value = '');
+  loadContacts();
+});
+
+// ── Team ──────────────────────────────────────────────────────────────────────
+async function loadTeam() {
+  const res = await api('/api/team');
+  if (!res.ok) return;
+  const members = await res.json();
+  const grid = document.getElementById('team-grid');
+  grid.innerHTML = members.map(m => `
+    <div class="team-card">
+      <div class="team-avatar">${initials(m.name)}</div>
+      <div class="team-info">
+        <div class="name">${esc(m.name)}</div>
+        <div class="email">${esc(m.email)}</div>
+        <span class="role">${m.role}</span>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('invite-btn').addEventListener('click', () => {
+  document.getElementById('invite-modal').classList.add('open');
+});
+document.getElementById('inv-cancel').addEventListener('click', () => {
+  document.getElementById('invite-modal').classList.remove('open');
+});
+document.getElementById('inv-submit').addEventListener('click', async () => {
+  const err = document.getElementById('inv-error');
+  err.style.display = 'none';
+  const body = {
+    name: document.getElementById('inv-name').value.trim(),
+    email: document.getElementById('inv-email').value.trim(),
+    password: document.getElementById('inv-password').value,
+    role: document.getElementById('inv-role').value,
+  };
+  if (!body.name || !body.email || !body.password) {
+    err.textContent = 'All fields required.'; err.style.display = 'block'; return;
+  }
+  const res = await api('/api/team/invite', { method: 'POST', body: JSON.stringify(body) });
+  if (!res.ok) { const d = await res.json(); err.textContent = d.detail || 'Failed.'; err.style.display = 'block'; return; }
+  document.getElementById('invite-modal').classList.remove('open');
+  loadTeam();
+});
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function initials(n) { return (n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function relTime(ts) {
+  if (!ts) return '';
+  const d = Date.now() - new Date(ts.endsWith('Z') ? ts : ts + 'Z').getTime();
+  if (d < 60000) return 'just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadDashboard();
+</script>
+</body>
+</html>
